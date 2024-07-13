@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app2
+  labels:
+    name: app2
+    purpose: ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: app2
+      purpose: ingress
+  # pod defination
+  template:
+    metadata:
+      labels:
+        name: app2
+        purpose: ingress
+    spec:
+      containers:
+      - name: app2
+        image: devopskk/app2:1.0
+---
+# Only clusterIP
+apiVersion: v1
+kind: Service
+metadata:
+  name: app2
+spec: 
+  selector:
+    name: app2
+    purpose: ingress
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-wildcard-host
+  annotations:
+        alb.ingress.kubernetes.io/scheme: internet-facing
+        alb.ingress.kubernetes.io/target-type: ip
+        alb.ingress.kubernetes.io/tags: Environment=dev,Team=test
+        alb.ingress.kubernetes.io/group.name: devopskk  ## Without this EKS creates another LB.As we don't want that i wrote this
+spec:
+  ingressClassName: alb
+  rules:
+  - host: "app2.devopskk.online" # ALB rule
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: app2 # ALB TG
+            port:
+              number: 80
+# if someone hits app2.devopskk.online - it will go to app2 service 
