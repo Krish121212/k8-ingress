@@ -1,1 +1,1 @@
-![ingress-controller drawio](https://github.com/user-attachments/assets/f1b4f729-6cfb-455d-832f-92ffa13ed5c8)
+![ingress-controller](https://github.com/user-attachments/assets/73c14786-8b30-417b-8afb-6124f2df10c4)
