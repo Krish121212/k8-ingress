@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1
+  labels:
+    name: app1
+    purpose: ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: app1
+      purpose: ingress
+  # pod defination
+  template:
+    metadata:
+      labels:
+        name: app1
+        purpose: ingress
+    spec:
+      containers:
+      - name: app1
+        image: devopskk/app1:1.0
+---
+# Only clusterIP
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec: 
+  selector:
+    name: app1
+    purpose: ingress
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
